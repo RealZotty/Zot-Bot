@@ -21,17 +21,17 @@ module.exports = {
             const banMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
-                    .setDescription(`${user.username} has been banned`)
+                    .setDescription(`${member} has been banned`)
                     .setAuthor({ name: 'ZotBot'})
                     .addFields(
                         { name: 'Reason', value: `${reason}`},
-                        { name: 'Banned By', value: `${interaction.user.username}`},
+                        { name: 'Banned By', value: `${interaction.member}`},
                     )
                     .setTimestamp()
             await member.ban({ reason }).then(async (data, err) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Ban Failed. ${err}`, ephemeral:  true});
                 interaction.channel.send({ embeds: [banMessage]});
-                interaction.reply({content: `${user.username} has been banned.`, ephemeral: true});
+                interaction.reply({content: `${member} has been banned.`, ephemeral: true});
                 const dbData = {
                     Action: 'Ban',
                     User: user.username,

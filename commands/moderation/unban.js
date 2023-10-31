@@ -4,7 +4,7 @@ const { database } = require('../../db');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unban')
-        .setDescription('unbans rulebreaking users.')
+        .setDescription('unbans rule abiding users.')
         .addUserOption(option => 
             option.setName('user').setDescription('Specify the user to be unbanned.').setRequired(true))
         .addStringOption(option => 
@@ -20,17 +20,17 @@ module.exports = {
             const unbanMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
-                    .setDescription(`${user.username} has been unbanned`)
+                    .setDescription(`${member} has been unbanned`)
                     .setAuthor({ name: 'ZotBot'})
                     .addFields(
                         { name: 'Reason', value: `${reason}`},
-                        { name: 'Unbanned By', value: `${interaction.user.username}`},
+                        { name: 'Unbanned By', value: `${interaction.member}`},
                     )
                     .setTimestamp()
             await interaction.guild.members.unban(user.id).then(async (data, err) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Unban Failed. ${err}`, ephemeral:  true});
                 interaction.channel.send({ embeds: [unbanMessage]});
-                interaction.reply({content: `${user.username} has been Unbanned.`, ephemeral: true});
+                interaction.reply({content: `${member} has been Unbanned.`, ephemeral: true});
                 const dbData = {
                     Action: 'Unban',
                     User: user.username,

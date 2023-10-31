@@ -21,17 +21,17 @@ module.exports = {
             const kickMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
-                    .setDescription(`${user.username} has been kicked`)
+                    .setDescription(`${member} has been kicked`)
                     .setAuthor({ name: 'ZotBot'})
                     .addFields(
                         { name: 'Reason', value: `${reason}`},
-                        { name: 'Kicked By', value: `${interaction.user.username}`},
+                        { name: 'Kicked By', value: `${interaction.member}`},
                     )
                     .setTimestamp()
             await member.kick({ reason }).then(async (data, err) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Kick Failed. ${err}`, ephemeral:  true});
                 interaction.channel.send({ embeds: [kickMessage]});
-                interaction.reply({content: `${user.username} has been kicked.`, ephemeral: true});
+                interaction.reply({content: `${member} has been kicked.`, ephemeral: true});
                 const dbData = {
                     Action: 'Kick',
                     User: user.username,
