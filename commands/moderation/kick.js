@@ -8,7 +8,8 @@ module.exports = {
         .addUserOption(option => 
             option.setName('user').setDescription('Specify the user to be kicked.').setRequired(true))
         .addStringOption(option => 
-            option.setName('reason').setDescription('Why is the user being kicked?').setRequired(true)),
+            option.setName('reason').setDescription('Why is the user being kicked?').setRequired(true))
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers),
     async execute(interaction) {
         const { guild, id } = interaction;
         if(interaction.member.permissions.has(PermissionsBitField.Flags.KICK_MEMBERS)) {

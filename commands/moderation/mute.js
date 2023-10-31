@@ -10,7 +10,8 @@ module.exports = {
         .addStringOption(option => 
             option.setName('reason').setDescription('Why is the user being muted?').setRequired(true))
         .addNumberOption(option =>
-            option.setName('duration').setDescription('How long should the user be muted in minutes?').setRequired(true)),
+            option.setName('duration').setDescription('How long should the user be muted in minutes?').setRequired(true))
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.MuteMembers),
     async execute(interaction) {
         const { guild, id } = interaction;
         if(interaction.member.permissions.has(PermissionsBitField.Flags.MuteMembers)) {

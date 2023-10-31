@@ -8,7 +8,8 @@ module.exports = {
         .addUserOption(option => 
             option.setName('user').setDescription('Specify the user to be unbanned.').setRequired(true))
         .addStringOption(option => 
-            option.setName('reason').setDescription('Why is the user being unbanned?').setRequired(true)),
+            option.setName('reason').setDescription('Why is the user being unbanned?').setRequired(true))
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers),
     async execute(interaction) {
         const { guild, id } = interaction;
         if(interaction.member.permissions.has(PermissionsBitField.Flags.BAN_MEMBERS)) {
