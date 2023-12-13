@@ -48,6 +48,13 @@ const database = function database(req) {
                     return Res(200)
                 }
             })
+        } else if(Action === 'fetchBannedWords') {
+            connection.query(`SELECT bannedWords FROM settings WHERE id=${guildId}`, (err, result) => {
+                if(err) return Rej(err)
+                if(result) {
+                    console.log(result)
+                }
+            })
         }
         connection.end()
     })
