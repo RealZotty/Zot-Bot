@@ -1,24 +1,22 @@
-import { EmbedBuilder } from "discord.js";
-
 const { Events } = require('discord.js');
 const { database } = require('../db');
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 
 module.exports = {
-    name: Events.MessageCreate,
+    name: Events.MessageUpdate,
     async execute(interaction: any) {
         let author = await interaction.author;
         let member = await interaction.guild.members.fetch(author.id);
         if(author.bot) return;
-        //if(member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS)) return;
-        let message = await interaction.content;
+        if(member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS)) return;
+        let message = await interaction.reactions.message.content;
         let bannedList = await database({Action: 'fetchBannedWords', guildId: interaction.guild.id});
+        let bannedWords = bannedList.bannedWords.toLowerCase().split(', ');
         let auditLogs = await database({Action: 'fetchAuditLogs', guildId: interaction.guild.id});
             let channel: any;
             if(auditLogs.enabled) {
                 channel = await interaction.guild.channels.fetch(auditLogs.channel.id);
             }
-        let bannedWords = bannedList.bannedWords.toLowerCase().split(', ');
         function validURL(str: string) {
             var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
               '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name

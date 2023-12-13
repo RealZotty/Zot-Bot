@@ -29,6 +29,11 @@ module.exports = {
                     return yield interaction.reply({ content: 'That is an invalid user.', ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a unban reason.', ephemeral: true });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let channel;
+                if (auditLogs.enabled) {
+                    channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);
+                }
                 const unbanMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -39,7 +44,7 @@ module.exports = {
                 yield interaction.guild.members.unban(user.id).then((data, err) => __awaiter(this, void 0, void 0, function* () {
                     if (err)
                         return yield interaction.reply({ content: `[ERROR] Unban Failed. ${err}`, ephemeral: true });
-                    interaction.channel.send({ embeds: [unbanMessage] });
+                    channel.send({ embeds: [unbanMessage] });
                     interaction.reply({ content: `${member} has been Unbanned.`, ephemeral: true });
                     const dbData = {
                         Action: 'Unban',

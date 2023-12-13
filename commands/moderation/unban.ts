@@ -17,7 +17,12 @@ module.exports = {
             let user = interaction.options.getUser('user');
             let reason = interaction.options.getString('reason')
             if(!member) return await interaction.reply({ content: 'That is an invalid user.', ephemeral: true});
-            if(!reason) return await interaction.reply({ content: 'Please specify a unban reason.', ephemeral: true})
+            if(!reason) return await interaction.reply({ content: 'Please specify a unban reason.', ephemeral: true});
+            let auditLogs = await database({Action: 'fetchAuditLogs', guildId: guild.id});
+            let channel: any;
+            if(auditLogs.enabled) {
+                channel = await interaction.guild.channels.fetch(auditLogs.channel.id);
+            }
             const unbanMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -30,7 +35,7 @@ module.exports = {
                     .setTimestamp()
             await interaction.guild.members.unban(user.id).then(async (data: any, err: any) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Unban Failed. ${err}`, ephemeral:  true});
-                interaction.channel.send({ embeds: [unbanMessage]});
+                channel.send({ embeds: [unbanMessage]});
                 interaction.reply({content: `${member} has been Unbanned.`, ephemeral: true});
                 const dbData = {
                     Action: 'Unban',

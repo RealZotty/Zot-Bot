@@ -31,6 +31,11 @@ module.exports = {
                     return yield interaction.reply({ content: `Sorry you cannot kick fellow admins. Please report any suspicious activity to a higher admin`, ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a kick reason.', ephemeral: true });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let channel;
+                if (auditLogs.enabled) {
+                    channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);
+                }
                 const kickMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -41,7 +46,7 @@ module.exports = {
                 yield member.kick({ reason }).then((data, err) => __awaiter(this, void 0, void 0, function* () {
                     if (err)
                         return yield interaction.reply({ content: `[ERROR] Kick Failed. ${err}`, ephemeral: true });
-                    interaction.channel.send({ embeds: [kickMessage] });
+                    channel.send({ embeds: [kickMessage] });
                     interaction.reply({ content: `${member} has been kicked.`, ephemeral: true });
                     const dbData = {
                         Action: 'Kick',

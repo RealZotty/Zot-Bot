@@ -18,6 +18,11 @@ module.exports = {
             let reason = interaction.options.getString('reason');
             if(!member) return await interaction.reply({ content: 'That is an invalid user.', ephemeral: true});
             if(!reason) return await interaction.reply({ content: 'Please specify a unmute reason.', ephemeral: true});
+            let auditLogs = await database({Action: 'fetchAuditLogs', guildId: guild.id});
+            let channel: any;
+            if(auditLogs.enabled) {
+                channel = await interaction.guild.channels.fetch(auditLogs.channel.id);
+            }
             const unmuteMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -30,7 +35,7 @@ module.exports = {
                     .setTimestamp()
             await member.timeout(null, reason).then(async (data: any, err: any) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Unmute Failed. ${err}`, ephemeral:  true});
-                interaction.channel.send({ embeds: [unmuteMessage]});
+                channel.send({ embeds: [unmuteMessage]});
                 interaction.reply({content: `${member} has been unmuted.`, ephemeral: true});
                 const dbData = {
                     Action: 'Unmute',

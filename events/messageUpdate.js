@@ -9,27 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = require("discord.js");
 const { Events } = require('discord.js');
 const { database } = require('../db');
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 module.exports = {
-    name: Events.MessageCreate,
+    name: Events.MessageUpdate,
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
             let author = yield interaction.author;
             let member = yield interaction.guild.members.fetch(author.id);
             if (author.bot)
                 return;
-            //if(member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS)) return;
-            let message = yield interaction.content;
+            if (member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS))
+                return;
+            let message = yield interaction.reactions.message.content;
             let bannedList = yield database({ Action: 'fetchBannedWords', guildId: interaction.guild.id });
+            let bannedWords = bannedList.bannedWords.toLowerCase().split(', ');
             let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: interaction.guild.id });
             let channel;
             if (auditLogs.enabled) {
                 channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);
             }
-            let bannedWords = bannedList.bannedWords.toLowerCase().split(', ');
             function validURL(str) {
                 var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
                     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -42,7 +42,7 @@ module.exports = {
             bannedWords.map((x) => {
                 if (validURL(x) && message.includes(x)) {
                     interaction.delete().catch((err) => console.log(err));
-                    const deleteEmbedBuilder = new discord_js_1.EmbedBuilder()
+                    const deleteEmbedBuilder = new EmbedBuilder()
                         .setColor('Red')
                         .setTitle('Advertisement Detected')
                         .addFields({
@@ -60,7 +60,7 @@ module.exports = {
                 }
                 else if (message.includes(x)) {
                     interaction.delete().catch((err) => console.log(err));
-                    const deleteEmbedBuilder = new discord_js_1.EmbedBuilder()
+                    const deleteEmbedBuilder = new EmbedBuilder()
                         .setColor('Red')
                         .setTitle('Banned Word Detected')
                         .addFields({

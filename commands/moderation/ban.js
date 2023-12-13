@@ -31,6 +31,11 @@ module.exports = {
                     return yield interaction.reply({ content: `Sorry you cannot ban fellow admins. Please report any suspicious activity to a higher admin`, ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a ban reason.', ephemeral: true });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let channel;
+                if (auditLogs.enabled) {
+                    channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);
+                }
                 const banMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -41,7 +46,7 @@ module.exports = {
                 yield member.ban({ reason }).then((data, err) => __awaiter(this, void 0, void 0, function* () {
                     if (err)
                         return yield interaction.reply({ content: `[ERROR] Ban Failed. ${err}`, ephemeral: true });
-                    interaction.channel.send({ embeds: [banMessage] });
+                    channel.send({ embeds: [banMessage] });
                     interaction.reply({ content: `${member} has been banned.`, ephemeral: true });
                     const dbData = {
                         Action: 'Ban',

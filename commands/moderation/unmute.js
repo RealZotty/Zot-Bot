@@ -29,6 +29,11 @@ module.exports = {
                     return yield interaction.reply({ content: 'That is an invalid user.', ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a unmute reason.', ephemeral: true });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let channel;
+                if (auditLogs.enabled) {
+                    channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);
+                }
                 const unmuteMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -39,7 +44,7 @@ module.exports = {
                 yield member.timeout(null, reason).then((data, err) => __awaiter(this, void 0, void 0, function* () {
                     if (err)
                         return yield interaction.reply({ content: `[ERROR] Unmute Failed. ${err}`, ephemeral: true });
-                    interaction.channel.send({ embeds: [unmuteMessage] });
+                    channel.send({ embeds: [unmuteMessage] });
                     interaction.reply({ content: `${member} has been unmuted.`, ephemeral: true });
                     const dbData = {
                         Action: 'Unmute',

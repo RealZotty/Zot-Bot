@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npx tsc && node .",
-    "deploy": "node ./deployCommands.js"
+    "deploy": "npx tsc && node ./deployCommands.js"
   },
   "keywords": [],
   "author": "",

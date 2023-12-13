@@ -19,6 +19,11 @@ module.exports = {
             if(!member) return await interaction.reply({ content: 'That is an invalid user.', ephemeral: true});
             if(member.permissions.has(PermissionsBitField.Flags.MuteMembers)) return await interaction.reply({ content: `Sorry you cannot ban fellow admins. Please report any suspicious activity to a higher admin`, ephemeral: true})
             if(!reason) return await interaction.reply({ content: 'Please specify a ban reason.', ephemeral: true})
+            let auditLogs = await database({Action: 'fetchAuditLogs', guildId: guild.id});
+            let channel: any;
+            if(auditLogs.enabled) {
+                channel = await interaction.guild.channels.fetch(auditLogs.channel.id);
+            }
             const banMessage = new EmbedBuilder()
                     .setColor('Red')
                     .setTitle('Administrative Action')
@@ -31,7 +36,7 @@ module.exports = {
                     .setTimestamp()
             await member.ban({ reason }).then(async (data: any, err: any) => {
                 if(err) return await interaction.reply({ content: `[ERROR] Ban Failed. ${err}`, ephemeral:  true});
-                interaction.channel.send({ embeds: [banMessage]});
+                channel.send({embeds: [banMessage]})
                 interaction.reply({content: `${member} has been banned.`, ephemeral: true});
                 const dbData = {
                     Action: 'Ban',
