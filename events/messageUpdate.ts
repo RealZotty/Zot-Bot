@@ -5,6 +5,7 @@ const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 module.exports = {
     name: Events.MessageUpdate,
     async execute(interaction: any) {
+        console.log(interaction)
         let author = await interaction.author;
         let member = await interaction.guild.members.fetch(author.id);
         if(author.bot) return;

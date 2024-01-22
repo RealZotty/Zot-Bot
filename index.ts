@@ -4,7 +4,7 @@ const path = require('path')
 const { database } = require('./db')
 
 require('dotenv').config();
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Partials } = require('discord.js');
 
 const client = new Client({
 	intents: [
@@ -12,7 +12,9 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessageReactions,
 	],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 client.commands = new Collection();

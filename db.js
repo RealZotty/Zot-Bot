@@ -13,6 +13,15 @@ const database = function database(req) {
     return new Promise(async (Res, Rej) => {
         let { Action, Author, User, Reason, timestamp, guildId, duration, _id, name, channels, Roles, data} = req;
         if(!duration) duration = null;
+        function containsNonLatinCodepoints(s) {
+            return /[^\u0000-\u00ff]/.test(s);
+        }
+        if(Reason) {
+            let boolean = containsNonLatinCodepoints(Reason);
+            if(boolean) {
+                Reason = 'No reason provided or invalid syntax.'
+            }
+        }
         if(Action === 'Ban' || Action === 'Kick' || Action === 'Unban' || Action === 'Mute' || Action === 'Unmute') {
             connection.query(`INSERT INTO moderation (id, Action, User, Reason, Author, timestamp, guildId, duration) VALUES ("${crypto.randomUUID()}", "${Action}", "${User}", "${Reason}", "${Author}", "${timestamp}", "${guildId}", "${duration}")`, (err, result) => {
                 if(err) return Rej(err)
@@ -136,6 +145,23 @@ const database = function database(req) {
                 return Res(null)
                }
             })
+       } else if (Action === 'setRulesEmbed') {
+        connection.query(`UPDATE guilds SET rulesEmbed='${JSON.stringify(data.rulesEmbed)}' WHERE id='${guildId}'`, (err, result) => {
+            if(err) return Rej(err)
+            if(result) {
+                return Res(200)
+            }
+
+        })
+       } else if (Action === 'getRulesEmbed') {
+        connection.query(`SELECT rulesEmbed FROM guilds WHERE id='${guildId}'`, (err, result) => {
+            if(err) throw err
+            if(result[0]) {
+                return Res(JSON.parse(result[0].rulesEmbed))
+            } else {
+                return Res(null)
+            }
+        })
        }
     })
 }
