@@ -28,7 +28,6 @@ module.exports = {
             const description = interaction.options.getString('description');
             const url = interaction.options.getString('url');
             const role = interaction.options.getRole('role');
-            console.log(title, description, url);
             const rulesEmbed = new EmbedBuilder()
                 .setColor('#ff1100')
                 .setTitle(title)

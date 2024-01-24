@@ -12,7 +12,7 @@ module.exports = {
             name: a.name
         }))
     
-        await database({Action: 'roleCreate', Roles})
+        await database({Action: 'roleCreate', Roles}).catch((err: any) => console.log(err));
     }
 }
 

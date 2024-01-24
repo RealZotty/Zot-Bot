@@ -13,7 +13,7 @@ module.exports = {
             name: a.name
         })})
     
-        await database({Action: 'roleUpdate', Roles});
+        await database({Action: 'roleUpdate', Roles}).catch((err: any) => console.log(err));;
     }
 }
 export{}

@@ -19,7 +19,7 @@ module.exports = {
             if(!member) return await interaction.reply({ content: 'That is an invalid user.', ephemeral: true});
             if(member.permissions.has(PermissionsBitField.Flags.MuteMembers)) return await interaction.reply({ content: `Sorry you cannot ban fellow admins. Please report any suspicious activity to a higher admin`, ephemeral: true})
             if(!reason) return await interaction.reply({ content: 'Please specify a ban reason.', ephemeral: true})
-            let auditLogs = await database({Action: 'fetchAuditLogs', guildId: guild.id});
+            let auditLogs = await database({Action: 'fetchAuditLogs', guildId: guild.id}).catch((err: any) => console.log(err));;
             let channel: any;
             if(auditLogs.enabled) {
                 channel = await interaction.guild.channels.fetch(auditLogs.channel.id);

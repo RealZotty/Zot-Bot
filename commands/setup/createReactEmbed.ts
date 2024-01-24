@@ -26,7 +26,6 @@ module.exports = {
         const description = interaction.options.getString('description');
         const url = interaction.options.getString('url');
         const role = interaction.options.getRole('role');
-        console.log(title, description, url)
         const rulesEmbed = new EmbedBuilder()
             .setColor('#ff1100')
             .setTitle(title)
@@ -39,7 +38,7 @@ module.exports = {
             rulesMsg.reactionRole = role;
             let res = database({Action: 'setRulesEmbed', guildId: interaction.guild.id, data: {
                 rulesEmbed: rulesMsg,
-            }})
+            }}).catch((err: any) => console.log(err));
             if(res) {
                 interaction.reply({content: `Embed successfully sent!`, ephemeral: true})
             } else {

@@ -14,7 +14,7 @@ module.exports = {
             Action: 'channelDelete',
             _id: channel.guild.id,
             channels: Channels,
-        })
+        }).catch((err: any) => console.log(err));
     }
 };
 

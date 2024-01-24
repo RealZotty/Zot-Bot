@@ -12,7 +12,7 @@ module.exports = {
             name: a.name
         }))
     
-        await database({Action: 'roleDelete', Roles});
+        await database({Action: 'roleDelete', Roles}).catch((err: any) => console.log(err));;
     }
 }
 

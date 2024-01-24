@@ -24,7 +24,8 @@ module.exports = {
                     name: a.name
                 });
             });
-            yield database({ Action: 'roleUpdate', Roles });
+            yield database({ Action: 'roleUpdate', Roles }).catch((err) => console.log(err));
+            ;
         });
     }
 };

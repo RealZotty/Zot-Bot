@@ -12,8 +12,8 @@ module.exports = {
         if(author.bot) return;
         //if(member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS)) return;
         let message = await interaction.content;
-        let bannedList = await database({Action: 'fetchBannedWords', guildId: interaction.guild.id});
-        let auditLogs = await database({Action: 'fetchAuditLogs', guildId: interaction.guild.id});
+        let bannedList = await database({Action: 'fetchBannedWords', guildId: interaction.guild.id}).catch((err: any) => console.log(err));
+        let auditLogs = await database({Action: 'fetchAuditLogs', guildId: interaction.guild.id}).catch((err: any) => console.log(err));
             let channel: any;
             if(auditLogs.enabled) {
                 channel = await interaction.guild.channels.fetch(auditLogs.channel.id);

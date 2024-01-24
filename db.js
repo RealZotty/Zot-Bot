@@ -106,7 +106,7 @@ const database = function database(req) {
             })
         } else if (Action === 'fetchWelcome') {
             connection.query(`SELECT * FROM settings WHERE id='${guildId}'`, (err, result) => {
-               if(err) throw err
+               if(err) Rej(err)
                if(result[0]) {
                    return Res(result[0])
                } else {
@@ -115,7 +115,7 @@ const database = function database(req) {
             })
        } else if (Action === 'setAuditLogs') {
             connection.query(`SELECT * FROM settings WHERE id='${data.guildId}'`, (err, result) => {
-                if(err) return console.log(err)
+                if(err) return Rej(err)
                 let auditLogs = {
                     channel: data.channel,
                     enabled: data.boolean        
@@ -138,7 +138,7 @@ const database = function database(req) {
             })
         } else if (Action === 'fetchAuditLogs') {
             connection.query(`SELECT auditLogs FROM settings WHERE id='${guildId}'`, (err, result) => {
-               if(err) throw err
+               if(err) Rej(err)
                if(result[0]) {
                    return Res(JSON.parse(result[0].auditLogs))
                } else {
@@ -155,12 +155,49 @@ const database = function database(req) {
         })
        } else if (Action === 'getRulesEmbed') {
         connection.query(`SELECT rulesEmbed FROM guilds WHERE id='${guildId}'`, (err, result) => {
-            if(err) throw err
+            if(err) Rej(err)
             if(result[0]) {
                 return Res(JSON.parse(result[0].rulesEmbed))
             } else {
                 return Res(null)
             }
+        })
+       } else if(Action === 'getTickets') {
+        connection.query(`SELECT tickets FROM guilds WHERE id='${guildId}'`, (err, result) => {
+            if(err) Rej(err)
+            if(result[0].tickets) {
+                return Res(JSON.parse(result[0].tickets));
+            } else {
+                return Res(0)
+            }
+        })
+       } else if(Action === 'insertTickets') {
+            connection.query(`SELECT tickets FROM guilds WHERE id='${guildId}'`, (err, result) => {
+                if(err) Rej(err)
+                if(result[0].tickets !== 'null') {
+                    let tickets = JSON.parse(result[0].tickets);
+                    connection.query(`UPDATE guilds SET tickets='${JSON.stringify([...tickets, data])}' WHERE id='${guildId}'`, (err, result) => {
+                        if(err) Rej(err)
+                    })
+
+                } else {
+                    connection.query(`UPDATE guilds SET tickets='${JSON.stringify([data])}' WHERE id='${guildId}'`, (err, result) => {
+                        if(err) Rej(err)
+                        return Res(200)
+                    })
+                }
+            })
+       } else if(Action === 'getTicketCategory') {
+            connection.query(`SELECT ticketCategory FROM settings WHERE id='${guildId}'`, (err, result) => {
+                if(err) Rej(err)
+                if(result[0].ticketCategory) {
+                    return Res(result[0].ticketCategory)
+                } else return Res('Tickets');
+            })
+       } else if(Action === 'setTicketCategory') {
+        connection.query(`UPDATE settings SET ticketCategory='${data.category}' WHERE id='${guildId}'`, (err, result) => {
+            if(err) return Rej(err)
+            return Res(200)
         })
        }
     })

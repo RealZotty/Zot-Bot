@@ -10,7 +10,7 @@ module.exports = {
        }
        let guild = await reaction.message.guild.fetch()
        let member = await guild.members.fetch(user.id)
-       let rulesEmbed = await database({Action: 'getRulesEmbed', guildId: reaction.message.guildId})
+       let rulesEmbed = await database({Action: 'getRulesEmbed', guildId: reaction.message.guildId}).catch((err: any) => console.log(err));
        let msgId = rulesEmbed.id;
        let roleId = rulesEmbed.reactionRole;
        let role = await guild.roles.fetch(roleId)

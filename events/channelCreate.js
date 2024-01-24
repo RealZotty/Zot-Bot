@@ -19,7 +19,6 @@ module.exports = {
             yield channel.guild.channels.fetch().then((x) => x.map((c) => {
                 if (c.type === 0) {
                     Channels.push({ id: c.id, name: c.name });
-                    console.log(c);
                 }
             }));
             yield database({

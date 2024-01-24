@@ -23,7 +23,6 @@ module.exports = {
             const { guild, id } = interaction;
             let channelData = interaction.options.getChannel('channel');
             let message = interaction.options.getString('message');
-            console.log(message);
             let channel = {
                 id: channelData.id,
                 name: channelData.name
