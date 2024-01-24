@@ -39,9 +39,15 @@ module.exports = {
                 msg.react("✅");
                 let rulesMsg = msg;
                 rulesMsg.reactionRole = role;
-                database({ Action: 'setRulesEmbed', guildId: interaction.guild.id, data: {
+                let res = database({ Action: 'setRulesEmbed', guildId: interaction.guild.id, data: {
                         rulesEmbed: rulesMsg,
                     } });
+                if (res) {
+                    interaction.reply({ content: `Embed successfully sent!`, ephemeral: true });
+                }
+                else {
+                    interaction.reply({ content: `Something failed, please try again.`, ephemeral: true });
+                }
             });
         });
     }

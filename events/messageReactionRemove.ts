@@ -15,7 +15,7 @@ module.exports = {
        let roleId = rulesEmbed.reactionRole;
        let role = await guild.roles.fetch(roleId)
        if(reaction.message.id === msgId) {
-        member.roles.remove(role)
+        member.roles.remove(role).catch((err: any) => console.log(err))
        }
     }
 };

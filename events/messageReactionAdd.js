@@ -26,8 +26,7 @@ module.exports = {
             let roleId = rulesEmbed.reactionRole;
             let role = yield guild.roles.fetch(roleId);
             if (reaction.message.id === msgId) {
-                console.log(role);
-                member.roles.add(role);
+                member.roles.add(role).catch((err) => console.log(err));
             }
         });
     }

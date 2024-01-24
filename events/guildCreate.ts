@@ -11,7 +11,7 @@ module.exports ={
                 Channels.push({id: c.id, name: c.name})
             }
         }))
-        const roles = await guild.roles.fetch();
+        const roles = await guild.roles.fetch().catch((err: any )=> console.log(err));
        roles.map((a: {id: string, name: string}) => 
         Roles.push({
             id: a.id,

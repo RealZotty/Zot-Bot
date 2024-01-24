@@ -22,7 +22,7 @@ module.exports = {
                     Channels.push({ id: c.id, name: c.name });
                 }
             }));
-            const roles = yield guild.roles.fetch();
+            const roles = yield guild.roles.fetch().catch((err) => console.log(err));
             roles.map((a) => Roles.push({
                 id: a.id,
                 name: a.name
