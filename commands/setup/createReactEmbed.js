@@ -40,7 +40,7 @@ module.exports = {
                 rulesMsg.reactionRole = role;
                 let res = database({ Action: 'setRulesEmbed', guildId: interaction.guild.id, data: {
                         rulesEmbed: rulesMsg,
-                    } });
+                    } }).catch((err) => console.log(err));
                 if (res) {
                     interaction.reply({ content: `Embed successfully sent!`, ephemeral: true });
                 }

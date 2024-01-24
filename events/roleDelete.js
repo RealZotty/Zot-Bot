@@ -21,7 +21,8 @@ module.exports = {
                 id: a.id,
                 name: a.name
             }));
-            yield database({ Action: 'roleDelete', Roles });
+            yield database({ Action: 'roleDelete', Roles }).catch((err) => console.log(err));
+            ;
         });
     }
 };

@@ -31,7 +31,8 @@ module.exports = {
                     return yield interaction.reply({ content: `Sorry you cannot kick fellow admins. Please report any suspicious activity to a higher admin`, ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a kick reason.', ephemeral: true });
-                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id }).catch((err) => console.log(err));
+                ;
                 let channel;
                 if (auditLogs.enabled) {
                     channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);

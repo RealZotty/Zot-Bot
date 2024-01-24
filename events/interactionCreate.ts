@@ -165,6 +165,148 @@ module.exports = {
 				} else {
 					interaction.reply({content: `Sorry only an administrator can use that.`, ephemeral: true})
 				}
+			} else if(id === 'suggestYes') {
+				let msgId = interaction.message.id;
+				let data = { msgId }
+				await database({Action: 'getSuggestion', guildId: interaction.guild.id, data}).catch((err: any) => console.log(err)).then(async (data: any) => {
+					let { id, votesYes, votesNo } = data;
+					let msg = await interaction.channel.messages.fetch(id);
+					if(votesYes.length > 0 && votesYes.includes(interaction.user.id)) return interaction.reply({content: `You already voted.`, ephemeral: true})
+					if(votesNo.length > 0 && votesNo.includes(interaction.user.id)) {
+						votesNo.map((x: any, index: number) => {
+							if(x === interaction.user.id) {
+								return votesNo.splice(index, 1)
+							}
+						})
+					}
+					votesYes.push(interaction.user.id);
+					let votes = votesYes.length;
+					let comp = interaction.message.components[0].components;
+					let button = comp.find((x: any) => {
+						if(x.customId === 'suggestYes') {
+							return x
+						}
+					});
+					let button2 = comp.find((x: any) => {
+						if(x.customId === 'suggestNo') {
+							return x
+						}
+					});
+					await database({Action: 'updateSuggestion', guildId: interaction.guild.id, data}).catch((err: any) => console.log(err));
+					let text = button.label.split(' ')[0];
+					let text2 = button2.label.split(' ')[0];
+					let isNum = votes;
+					let noText = text2;
+					if(votesNo > 0) {
+						noText = `${text} ${votesNo.length}`
+					}
+					if(isNum === 0) {
+						let yesButton = new ButtonBuilder()
+							.setCustomId('suggestYes')
+							.setLabel(`✔️`)
+							.setStyle(ButtonStyle.Success)
+						let noButton = new ButtonBuilder()
+							.setCustomId('suggestNo')
+							.setLabel(noText)
+							.setStyle(ButtonStyle.Secondary)
+						let row = new ActionRowBuilder()
+							.addComponents(yesButton, noButton)
+						interaction.update({
+							components : [row]
+						})
+						votesYes = [];
+					} else {
+						let num = isNum;
+						if(!isNum) {
+							num = 0;
+						}
+						
+						let yesButton = new ButtonBuilder()
+							.setCustomId('suggestYes')
+							.setLabel(`${text} ${num}`)
+							.setStyle(ButtonStyle.Success)
+						let noButton = new ButtonBuilder()
+							.setCustomId('suggestNo')
+							.setLabel(noText)
+							.setStyle(ButtonStyle.Secondary)
+						let row = new ActionRowBuilder()
+							.addComponents(yesButton, noButton)
+						interaction.update({
+							components : [row]
+						})
+					}
+				})
+			} else if(id === 'suggestNo') {
+				let msgId = interaction.message.id;
+				let data = { msgId }
+				await database({Action: 'getSuggestion', guildId: interaction.guild.id, data}).catch((err: any) => console.log(err)).then(async (data: any) => {
+					let { id, votesYes, votesNo } = data;
+					let msg = await interaction.channel.messages.fetch(id);
+					if(votesNo.length > 0 && votesNo.includes(interaction.user.id)) return interaction.reply({content: `You already voted.`, ephemeral: true})
+					if(votesYes.length > 0 && votesYes.includes(interaction.user.id)) {
+						votesYes.map((x: any, index: number) => {
+							if(x === interaction.user.id) {
+								return votesYes.splice(index, 1)
+							}
+						})
+					}
+					votesNo.push(interaction.user.id);
+					let votes = votesNo.length;
+					let comp = interaction.message.components[0].components;
+					let button = comp.find((x: any) => {
+						if(x.customId === 'suggestNo') {
+							return x
+						}
+					});
+					let button2 = comp.find((x: any) => {
+						if(x.customId === 'suggestYes') {
+							return x
+						}
+					});
+					await database({Action: 'updateSuggestion', guildId: interaction.guild.id, data}).catch((err: any) => console.log(err))
+					let text = button.label.split(' ')[0];
+					let text2 = button2.label.split(' ')[0];
+					let num = votes;
+					let yesText = text2;
+					if(votesYes.length > 0) {
+						yesText = `${text} ${num}`
+					}
+					if(num === 0) {
+						let yesButton = new ButtonBuilder()
+							.setCustomId('suggestYes')
+							.setLabel(yesText)
+							.setStyle(ButtonStyle.Success)
+						let noButton = new ButtonBuilder()
+							.setCustomId('suggestNo')
+							.setLabel(`${text}`)
+							.setStyle(ButtonStyle.Secondary)
+						let row = new ActionRowBuilder()
+							.addComponents(yesButton, noButton)
+						interaction.update({
+							components : [row]
+						})
+						
+					} else {
+						if(!num) {
+							num = 0;
+						}
+						
+						let yesButton = new ButtonBuilder()
+							.setCustomId('suggestYes')
+							.setLabel(yesText)
+							.setStyle(ButtonStyle.Success)
+						let noButton = new ButtonBuilder()
+							.setCustomId('suggestNo')
+							.setLabel(`${text} ${num}`)
+							.setStyle(ButtonStyle.Secondary)
+						let row = new ActionRowBuilder()
+							.addComponents(yesButton, noButton)
+						interaction.update({
+							components : [row]
+						})
+					}
+					
+				})
 			}
 		} else return;
 	},

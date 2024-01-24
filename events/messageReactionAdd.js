@@ -21,7 +21,7 @@ module.exports = {
             }
             let guild = yield reaction.message.guild.fetch();
             let member = yield guild.members.fetch(user.id);
-            let rulesEmbed = yield database({ Action: 'getRulesEmbed', guildId: reaction.message.guildId });
+            let rulesEmbed = yield database({ Action: 'getRulesEmbed', guildId: reaction.message.guildId }).catch((err) => console.log(err));
             let msgId = rulesEmbed.id;
             let roleId = rulesEmbed.reactionRole;
             let role = yield guild.roles.fetch(roleId);

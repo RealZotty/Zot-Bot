@@ -25,7 +25,7 @@ module.exports = {
                 Action: 'channelCreate',
                 _id: channel.guild.id,
                 channels: Channels,
-            });
+            }).catch((err) => console.log(err));
         });
     }
 };

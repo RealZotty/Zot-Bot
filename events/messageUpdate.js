@@ -24,9 +24,11 @@ module.exports = {
             if (member.permissions.has(PermissionsBitField.Flags.MUTE_MEMBERS))
                 return;
             let message = yield interaction.reactions.message.content;
-            let bannedList = yield database({ Action: 'fetchBannedWords', guildId: interaction.guild.id });
+            let bannedList = yield database({ Action: 'fetchBannedWords', guildId: interaction.guild.id }).catch((err) => console.log(err));
+            ;
             let bannedWords = bannedList.bannedWords.toLowerCase().split(', ');
-            let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: interaction.guild.id });
+            let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: interaction.guild.id }).catch((err) => console.log(err));
+            ;
             let channel;
             if (auditLogs.enabled) {
                 channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);

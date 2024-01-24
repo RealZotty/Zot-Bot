@@ -21,7 +21,7 @@ module.exports = {
                 id: a.id,
                 name: a.name
             }));
-            yield database({ Action: 'roleCreate', Roles });
+            yield database({ Action: 'roleCreate', Roles }).catch((err) => console.log(err));
         });
     }
 };

@@ -29,7 +29,8 @@ module.exports = {
                     return yield interaction.reply({ content: 'That is an invalid user.', ephemeral: true });
                 if (!reason)
                     return yield interaction.reply({ content: 'Please specify a unban reason.', ephemeral: true });
-                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id });
+                let auditLogs = yield database({ Action: 'fetchAuditLogs', guildId: guild.id }).catch((err) => console.log(err));
+                ;
                 let channel;
                 if (auditLogs.enabled) {
                     channel = yield interaction.guild.channels.fetch(auditLogs.channel.id);

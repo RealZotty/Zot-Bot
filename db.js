@@ -199,6 +199,103 @@ const database = function database(req) {
             if(err) return Rej(err)
             return Res(200)
         })
+       } else if(Action === 'setSuggestionChannel') {
+                    connection.query(`UPDATE settings SET suggestions='${data.channel}' WHERE id='${guildId}'`, (err, result) => {
+                        if(err) return Rej(err)
+                        if(result) {
+                            return Res(200)
+                        }
+                    })
+
+       } else if(Action === 'getSuggestionChannel') {
+            connection.query(`SELECT suggestions FROM settings WHERE id='${guildId}'`, (err, result) => {
+                if(err) return Rej(err)
+                if(result) {
+                    return Res(result[0].suggestions)
+                }
+            })
+       } else if(Action === 'insertSuggestion') {
+            connection.query(`SELECT suggestions FROM guilds WHERE id='${guildId}'`, (err, result) => {
+                if(err) return Rej(err)
+                let isArr;
+                try {
+                    isArr = JSON.parse(result[0].suggestions);
+                } catch(err) {
+                    isArr = false;
+                }
+                if(isArr) {
+                    let old = JSON.parse(result[0].suggestions);
+                    connection.query(`UPDATE guilds SET suggestions='${JSON.stringify([...old, data])}' WHERE id='${guildId}'`, (err, result) => {
+                        if(err) return Rej(err)
+                        if(result) {
+                            return Res(200)
+                        }
+                    })
+                } else {
+                    connection.query(`UPDATE guilds SET suggestions='${JSON.stringify([data])}' WHERE id='${guildId}'`, (err, result) => {
+                        if(err) return Rej(err)
+                        if(result) {
+                            return Res(200)
+                        }
+                    })
+                }
+            })
+       } else if(Action === 'updateSuggestion') {
+        connection.query(`SELECT suggestions FROM guilds WHERE id='${guildId}'`, async (err, result) => {
+            if(err) return Rej(err)
+            let isArr;
+                try {
+                    isArr = JSON.parse(result[0].suggestions);
+                } catch(err) {
+                    isArr = false;
+                }
+            if(isArr) {
+                let old = JSON.parse(result[0].suggestions);
+                let newArr;
+                function Update(o) {
+                    return o.map((x, index) => {
+                        if(x.id === data.id) {
+                            old.splice(index, 1);
+                            newArr = [...old, data]
+                        }
+                    })
+                }
+                Update(old)
+                connection.query(`UPDATE guilds SET suggestions='${JSON.stringify([...old, data])}' WHERE id='${guildId}'`, (err, result) => {
+                    if(err) return Rej(err)
+                    if(result) {
+                        return Res(200)
+                    }
+                })
+            } else {
+                connection.query(`UPDATE guilds SET suggestions='${JSON.stringify([data])}' WHERE id='${guildId}'`, (err, result) => {
+                    if(err) return Rej(err)
+                    if(result) {
+                        return Res(200)
+                    }
+                })
+            }
+        })
+   } else if(Action === 'getSuggestion') {
+            connection.query(`SELECT suggestions FROM guilds WHERE id='${guildId}'`, (err, result) => {
+                if(err) return Rej(err)
+                let isArr;
+                try {
+                    isArr = JSON.parse(result[0].suggestions);
+                } catch(err) {
+                    isArr = false;
+                }
+                if(isArr) {
+                    let arr = JSON.parse(result[0].suggestions);
+                    arr.map((x) => {
+                        if(x.id === data.msgId) {
+                            return Res(x)
+                        }
+                    })
+                } else {
+                    return Rej(404)
+                }
+            })
        }
     })
 }
