@@ -37,13 +37,25 @@ module.exports = {
                 return interaction.reply({ content: `The URL was invalid`, ephemeral: true });
             }
             interaction.reply({ content: `Suggestion successfully sent!`, ephemeral: true });
-            let url = yield getImage(suggestion.split(' ')[0]);
-            let suggestionEmbed = new EmbedBuilder()
-                .setTitle('Status: ***Pending***')
-                .setColor('#808080')
-                .addFields({ name: 'Suggestion', value: `${suggestion}` }, { name: 'Suggested By', value: `${interaction.user.username}` })
-                .setImage(url[0])
-                .setTimestamp();
+            let url = null;
+            let suggestionEmbed;
+            console.log(suggestion.split(' ')[0].includes('gta5-mods.com'));
+            if (suggestion.split(' ')[0].includes('gta5-mods.com')) {
+                url = yield getImage(suggestion.split(' ')[0]);
+                suggestionEmbed = new EmbedBuilder()
+                    .setTitle('Status: ***Pending***')
+                    .setColor('#808080')
+                    .addFields({ name: 'Suggestion', value: `${suggestion}` }, { name: 'Suggested By', value: `${interaction.user.username}` })
+                    .setImage(url[0])
+                    .setTimestamp();
+            }
+            else {
+                suggestionEmbed = new EmbedBuilder()
+                    .setTitle('Status: ***Pending***')
+                    .setColor('#808080')
+                    .addFields({ name: 'Suggestion', value: `${suggestion}` }, { name: 'Suggested By', value: `${interaction.user.username}` })
+                    .setTimestamp();
+            }
             let yesButton = new discord_js_1.ButtonBuilder()
                 .setCustomId('suggestYes')
                 .setLabel('✔️')

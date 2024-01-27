@@ -28,14 +28,7 @@ module.exports = {
             }
             interaction.reply({content: `Suggestion successfully sent!`, ephemeral: true})
             let url = null;
-            let suggestionEmbed = new EmbedBuilder()
-            .setTitle('Status: ***Pending***')
-            .setColor('#808080')
-            .addFields(
-                { name: 'Suggestion', value: `${suggestion}`},
-                { name: 'Suggested By', value: `${interaction.user.username}`}
-            )
-            .setTimestamp();
+            let suggestionEmbed;
             if(suggestion.split(' ')[0].includes('gta5-mods.com')) {
                 url = await getImage(suggestion.split(' ')[0]);
                 suggestionEmbed = new EmbedBuilder()
@@ -47,6 +40,14 @@ module.exports = {
                 )
                 .setImage(url[0])
                 .setTimestamp();
+            } else {
+                suggestionEmbed = new EmbedBuilder()
+            .setTitle('Status: ***Pending***')
+            .setColor('#808080')
+            .addFields(
+                { name: 'Suggestion', value: `${suggestion}`},
+                { name: 'Suggested By', value: `${interaction.user.username}`}            )
+            .setTimestamp();
             }
             let yesButton = new ButtonBuilder()
                     .setCustomId('suggestYes')
