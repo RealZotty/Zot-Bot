@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
+const { getImage } = require('../../functions/scrape.js');
 const { SlashCommandBuilder, PermissionsBitField, EmbedBuilder } = require('discord.js');
 const { database } = require('../../db');
 module.exports = {
@@ -23,10 +24,25 @@ module.exports = {
             const channelId = yield database({ Action: 'getSuggestionChannel', guildId: guild.id }).catch((err) => console.log(err));
             const channel = yield interaction.guild.channels.fetch(channelId);
             const suggestion = interaction.options.getString('suggestion');
+            function validURL(str) {
+                var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+                    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+                    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+                    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+                    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+                    '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+                return !!pattern.test(str);
+            }
+            if (!validURL(suggestion.split(' ')[0])) {
+                return interaction.reply({ content: `The URL was invalid`, ephemeral: true });
+            }
+            interaction.reply({ content: `Suggestion successfully sent!`, ephemeral: true });
+            let url = yield getImage(suggestion.split(' ')[0]);
             let suggestionEmbed = new EmbedBuilder()
                 .setTitle('Status: ***Pending***')
                 .setColor('#808080')
                 .addFields({ name: 'Suggestion', value: `${suggestion}` }, { name: 'Suggested By', value: `${interaction.user.username}` })
+                .setImage(url[0])
                 .setTimestamp();
             let yesButton = new discord_js_1.ButtonBuilder()
                 .setCustomId('suggestYes')
@@ -42,8 +58,7 @@ module.exports = {
                 let id = msg.id;
                 let votesYes = [];
                 let votesNo = [];
-                database({ Action: 'insertSuggestion', guildId: guild.id, data: { id, votesYes, votesNo } });
-                interaction.reply({ content: `Suggestion successfully sent.`, ephemeral: true });
+                return database({ Action: 'insertSuggestion', guildId: guild.id, data: { id, votesYes, votesNo } });
             });
         });
     }
