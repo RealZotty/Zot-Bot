@@ -1,0 +1,18 @@
+services:
+  client:
+    container_name: "zot-bott"
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: deps
+    ports:
+      - "${PORT_CLIENT}:${PORT_CLIENT}"
+    expose:
+      - ${PORT_CLIENT}
+    networks:
+      - zot_bot
+    restart: always
+
+networks:
+  zot_bot:
+    external: true
