@@ -39,7 +39,6 @@ module.exports = {
             interaction.reply({ content: `Suggestion successfully sent!`, ephemeral: true });
             let url = null;
             let suggestionEmbed;
-            console.log(suggestion.split(' ')[0].includes('gta5-mods.com'));
             if (suggestion.split(' ')[0].includes('gta5-mods.com')) {
                 url = yield getImage(suggestion.split(' ')[0]);
                 suggestionEmbed = new EmbedBuilder()

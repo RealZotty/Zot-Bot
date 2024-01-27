@@ -14,6 +14,7 @@ async function main(url) {
         })
         return data
     })
+    await page.waitForTimeout(5000)
     await browser.close();
 
     return image

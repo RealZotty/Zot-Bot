@@ -16,7 +16,6 @@ module.exports = {
     name: Events.MessageUpdate,
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(interaction);
             let author = yield interaction.author;
             let member = yield interaction.guild.members.fetch(author.id);
             if (author.bot)

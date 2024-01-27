@@ -68,7 +68,7 @@ const database = function database(req) {
             })
         } else if (Action === 'setBannedWords') {
             connection.query(`SELECT * FROM settings WHERE id='${data.guildId}'`, (err, result) => {
-                if(err) return console.log(err)
+                if(err) return rej(404)
                 if(result[0]) {
                     connection.query(`UPDATE settings SET bannedWords='${data.bannedWords}' WHERE id='${data.guildId}'`, (err, result) =>{
                         if(err) return Rej(err)
@@ -87,7 +87,7 @@ const database = function database(req) {
             })
         } else if (Action === 'setWelcome') {
             connection.query(`SELECT * FROM settings WHERE id='${data.guildId}'`, (err, result) => {
-                if(err) return console.log(err)
+                if(err) return rej(404)
                 if(result[0]) {
                     connection.query(`UPDATE settings SET welcomeChannel='${JSON.stringify(data.channel)}', welcomeMessage='${data.message}' WHERE id='${data.guildId}'`, (err, result) =>{
                         if(err) return Rej(err)
