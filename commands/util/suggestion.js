@@ -31,6 +31,10 @@ module.exports = {
                 return interaction.reply({ content: `Sorry this message wasn't found.`, ephemeral: true });
             });
             let title = msg.embeds[0].data.title;
+            let url = null;
+            if (msg.embeds[0].data.image) {
+                url = msg.embeds[0].data.image.url;
+            }
             if (title !== 'Status: ***Pending***')
                 return interaction.reply({ content: `A decision has already been made`, ephemeral: true });
             let votes1 = data.votesYes.length;
@@ -45,6 +49,18 @@ module.exports = {
                     name: 'No', value: votes2.toString(), inline: true
                 })
                     .setTimestamp();
+                if (url) {
+                    acceptedEmbed = new EmbedBuilder()
+                        .setTitle('Status: [**Accepted**]')
+                        .setColor('Green')
+                        .addFields(...fields, {
+                        name: 'Yes', value: votes1.toString(), inline: true
+                    }, {
+                        name: 'No', value: votes2.toString(), inline: true
+                    })
+                        .setImage(url)
+                        .setTimestamp();
+                }
                 msg.edit({
                     components: [],
                     embeds: [acceptedEmbed]
@@ -61,6 +77,18 @@ module.exports = {
                     name: 'No', value: votes2.toString(), inline: true
                 })
                     .setTimestamp();
+                if (url) {
+                    deniedEmbed = new EmbedBuilder()
+                        .setTitle('Status: [**Denied**]')
+                        .setColor('Red')
+                        .addFields(...fields, {
+                        name: 'Yes', value: votes1.toString(), inline: true
+                    }, {
+                        name: 'No', value: votes2.toString(), inline: true
+                    })
+                        .setImage(url)
+                        .setTimestamp();
+                }
                 msg.edit({
                     components: [],
                     embeds: [deniedEmbed]
@@ -77,6 +105,18 @@ module.exports = {
                     name: 'No', value: votes2.toString(), inline: true
                 })
                     .setTimestamp();
+                if (url) {
+                    implementedEmbed = new EmbedBuilder()
+                        .setTitle('Status: [**Implemented**]')
+                        .setColor('#A020F0')
+                        .addFields(...fields, {
+                        name: 'Yes', value: votes1.toString(), inline: true
+                    }, {
+                        name: 'No', value: votes2.toString(), inline: true
+                    })
+                        .setImage(url)
+                        .setTimestamp();
+                }
                 msg.edit({
                     components: [],
                     embeds: [implementedEmbed]

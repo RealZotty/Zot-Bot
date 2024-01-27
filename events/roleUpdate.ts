@@ -4,7 +4,6 @@ const { database } = require('../db');
 module.exports = {
     name: Events.GuildRoleUpdate,
     async execute (role: any) {
-        console.log(typeof role)
        const roles = await role.guild.roles.fetch();
        let Roles: Object[] = [];
        roles.map((a: {id: string, name: string}) => {

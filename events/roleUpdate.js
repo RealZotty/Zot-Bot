@@ -15,7 +15,6 @@ module.exports = {
     name: Events.GuildRoleUpdate,
     execute(role) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(typeof role);
             const roles = yield role.guild.roles.fetch();
             let Roles = [];
             roles.map((a) => {
